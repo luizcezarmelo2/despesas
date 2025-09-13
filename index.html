@@ -359,7 +359,7 @@
     <div id="status"></div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+        import { getDatabase, ref, set, onValue, get } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
         // --- LÓGICA DE LOGIN ---
         const PASSWORD_NODE = 'appPassword_despesas';
@@ -389,7 +389,8 @@
         // Função para verificar a senha no Firebase e controlar a interface
         async function checkPasswordStatus() {
             const passwordRef = ref(database, PASSWORD_NODE);
-            onValue(passwordRef, (snapshot) => {
+            try {
+                const snapshot = await get(passwordRef);
                 correctPassword = snapshot.val();
                 if (correctPassword) {
                     setupMessage.style.display = 'none';
@@ -403,7 +404,10 @@
                     passwordInput.placeholder = 'Defina uma senha';
                 }
                 loginScreen.style.display = 'flex';
-            }, { onlyOnce: true });
+            } catch (error) {
+                console.error("Erro ao buscar senha:", error);
+                loginScreen.style.display = 'flex';
+            }
         }
 
         // Função para definir a senha pela primeira vez
@@ -728,94 +732,3 @@
             });
 
             tbody.addEventListener('keydown', (e) => {
-                if (e.target.tagName !== 'TD') return;
-                const cell = e.target;
-                const row = cell.parentElement;
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    const newTr = document.createElement('tr');
-                    for (let i = 0; i < row.cells.length; i++) {
-                        const newTd = document.createElement('td');
-                        newTd.setAttribute('contenteditable', 'true');
-                        newTr.appendChild(newTd);
-                    }
-                    row.after(newTr);
-                    newTr.cells[0]?.focus();
-                } else if (e.key === 'Tab') {
-                    e.preventDefault();
-                    const focusable = Array.from(tbody.querySelectorAll('td[contenteditable="true"]'));
-                    const index = focusable.indexOf(cell);
-                    let nextIndex = index + (e.shiftKey ? -1 : 1);
-                    if (nextIndex >= focusable.length) {
-                        addNewRow(tbody, true);
-                    } else {
-                        if (nextIndex < 0) {
-                            nextIndex = focusable.length - 1;
-                        }
-                        focusable[nextIndex]?.focus();
-                    }
-                }
-            });
-        }
-
-        // --- CALCULATIONS & SUMMARY ---
-        function formatCurrency(value) {
-            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
-
-        function parseCurrency(text) {
-            return parseFloat(String(text).replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-        }
-
-        function calculateColumnTotal(tbody, colIndex) {
-            return Array.from(tbody.rows).reduce((total, row) =>
-                total + (row.cells[colIndex] ? parseCurrency(row.cells[colIndex].textContent) : 0), 0);
-        }
-
-        function updateInstallmentSummary() {
-            ui.installmentsSummaryTable.innerHTML = '';
-            const allInstallments = [
-                ...parseTableData(ui.nubankTable).map(d => ({ data: d, card: 'Nubank' })),
-                ...parseTableData(ui.c6Table).map(d => ({ data: d, card: 'C6 Bank' }))
-            ];
-            allInstallments.forEach(({ data, card }) => {
-                const parts = (data[2] || "").match(/(\d+)\/(\d+)/);
-                if (!parts) return;
-                const remaining = parseInt(parts[2], 10) - parseInt(parts[1], 10);
-                const endDate = new Date(current_date);
-                endDate.setMonth(endDate.getMonth() + remaining);
-                const endMonth = endDate.toLocaleString('pt-BR', { month: 'long' });
-                const endYear = endDate.getFullYear();
-                const row = ui.installmentsSummaryTable.insertRow();
-                row.insertCell().textContent = data[0];
-                row.insertCell().textContent = card;
-                row.insertCell().textContent = data[2];
-                row.insertCell().textContent = `${endMonth.charAt(0).toUpperCase() + endMonth.slice(1)}/${endYear}`;
-            });
-        }
-
-        function updateTotals(type) {
-            const totalsMap = {
-                fixed: { el: ui.fixedTotal, table: ui.fixedExpensesTable },
-                nubank: { el: ui.nubankTotal, table: ui.nubankTable },
-                c6: { el: ui.c6Total, table: ui.c6Table }
-            };
-            if (totalsMap[type]) {
-                totalsMap[type].el.textContent = formatCurrency(calculateColumnTotal(totalsMap[type].table, 1));
-            }
-            updateAllTotals();
-        }
-
-        function updateAllTotals() {
-            const fixedTotal = calculateColumnTotal(ui.fixedExpensesTable, 1);
-            const nubankTotal = calculateColumnTotal(ui.nubankTable, 1);
-            const c6Total = calculateColumnTotal(ui.c6Table, 1);
-            ui.fixedTotal.textContent = formatCurrency(fixedTotal);
-            ui.nubankTotal.textContent = formatCurrency(nubankTotal);
-            ui.c6Total.textContent = formatCurrency(c6Total);
-            ui.totalGeral.textContent = formatCurrency(fixedTotal + nubankTotal + c6Total);
-            updateInstallmentSummary();
-        }
-    </script>
-</body>
-</html>
