@@ -219,7 +219,7 @@
             width: 100%;
             height: 100%;
             background-color: #f0f2f5;
-            display: flex;
+            display: none;
             justify-content: center;
             align-items: center;
             z-index: 1000;
@@ -361,8 +361,8 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
         import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-        // --- LÓGICA DE LOGIN INSERIDA AQUI ---
-        const PASSWORD_NODE = 'appPassword_despesas'; // Nome do nó no Firebase para armazenar a senha (alterado para evitar conflito)
+        // --- LÓGICA DE LOGIN ---
+        const PASSWORD_NODE = 'appPassword_despesas';
         const mainContent = document.getElementById('main-content');
         const loginScreen = document.getElementById('login-screen');
         const passwordInput = document.getElementById('password-input');
@@ -370,7 +370,7 @@
         const togglePasswordBtn = document.getElementById('toggle-password');
         const setupMessage = document.getElementById('setup-message');
         const loginTitle = document.getElementById('login-title');
-
+        
         // Configuração do Firebase
         const firebaseConfig = {
             apiKey: "AIzaSyBiikcagIm1p7wJG6DsHijkvdy1fpDBn8Y",
@@ -386,20 +386,23 @@
 
         let correctPassword = null;
 
-        // Função para verificar a senha no Firebase
-        async function loadPassword() {
-            const snapshot = await getDatabase().ref(PASSWORD_NODE).once('value');
-            correctPassword = snapshot.val();
-            if (correctPassword) {
-                setupMessage.style.display = 'none';
-                loginTitle.textContent = 'Acesso Restrito';
-            } else {
-                setupMessage.style.display = 'block';
-                loginTitle.textContent = 'Configurar Senha';
-                document.getElementById('login-button').style.display = 'none';
-                passwordInput.placeholder = 'Defina uma senha';
-            }
-            loginScreen.style.display = 'flex';
+        // Função para verificar a senha no Firebase e controlar a interface
+        async function checkPasswordStatus() {
+            const snapshot = await onValue(ref(database, PASSWORD_NODE), (snapshot) => {
+                correctPassword = snapshot.val();
+                if (correctPassword) {
+                    setupMessage.style.display = 'none';
+                    loginTitle.textContent = 'Acesso Restrito';
+                    document.getElementById('login-button').style.display = 'block';
+                    passwordInput.placeholder = 'Digite a senha';
+                } else {
+                    setupMessage.style.display = 'block';
+                    loginTitle.textContent = 'Configurar Senha';
+                    document.getElementById('login-button').style.display = 'none';
+                    passwordInput.placeholder = 'Defina uma senha';
+                }
+                loginScreen.style.display = 'flex';
+            }, { onlyOnce: true });
         }
 
         // Função para definir a senha pela primeira vez
@@ -408,10 +411,8 @@
             if (newPassword && newPassword.trim() !== '') {
                 set(ref(database, PASSWORD_NODE), newPassword).then(() => {
                     alert('Senha definida com sucesso!');
-                    loadPassword(); // Recarrega para mostrar a tela de login
+                    checkPasswordStatus();
                     passwordInput.value = '';
-                    document.getElementById('login-button').style.display = 'block';
-                    passwordInput.placeholder = 'Digite a senha';
                 }).catch(error => {
                     console.error("Erro ao salvar a senha:", error);
                     alert("Ocorreu um erro. Tente novamente.");
@@ -428,15 +429,14 @@
                 showMainContent();
             } else {
                 errorMessage.style.display = 'block';
-                passwordInput.value = ''; // Limpa o campo da senha
+                passwordInput.value = '';
             }
         }
 
         // Função para mostrar o conteúdo principal
         function showMainContent() {
             loginScreen.style.display = 'none';
-            mainContent.style.display = 'block'; // Usando 'block' para o layout flex, ou 'flex' se for o caso
-            // Chama a inicialização do app principal aqui
+            mainContent.style.display = 'block';
             initApp();
         }
 
@@ -464,7 +464,7 @@
 
         // Inicia o processo de login
         window.addEventListener('load', () => {
-            loadPassword();
+            checkPasswordStatus();
         });
         // --- FIM DA LÓGICA DE LOGIN ---
 
