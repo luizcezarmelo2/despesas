@@ -152,15 +152,16 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase
 import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
 // --- FIREBASE CONFIGURAÇÃO ---
-const firebaseConfig = {
-    apiKey: "SUA_API_KEY",
-    authDomain: "SEU_AUTH_DOMAIN",
-    databaseURL: "SUA_DATABASE_URL",
-    projectId: "SEU_PROJECT_ID",
-    storageBucket: "SEU_STORAGE_BUCKET",
-    messagingSenderId: "SEU_SENDER_ID",
-    appId: "SEU_APP_ID"
-};
+ // Configuração do Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBiikcagIm1p7wJG6DsHijkvdy1fpDBn8Y",
+            authDomain: "bd-teste-c931c.firebaseapp.com",
+            databaseURL: "https://bd-teste-c931c-default-rtdb.europe-west1.firebasedatabase.app",
+            projectId: "bd-teste-c931c",
+            storageBucket: "bd-teste-c931c.appspot.com",
+            messagingSenderId: "270308100761",
+            appId: "1:270308100761:web:ae34fde6d5ae86b67b0608"
+        };
 const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 
@@ -240,3 +241,4 @@ checkPasswordStatus();
 </script>
 </body>
 </html>
+
