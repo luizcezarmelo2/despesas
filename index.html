@@ -388,7 +388,8 @@
 
         // Função para verificar a senha no Firebase e controlar a interface
         async function checkPasswordStatus() {
-            const snapshot = await onValue(ref(database, PASSWORD_NODE), (snapshot) => {
+            const passwordRef = ref(database, PASSWORD_NODE);
+            onValue(passwordRef, (snapshot) => {
                 correctPassword = snapshot.val();
                 if (correctPassword) {
                     setupMessage.style.display = 'none';
