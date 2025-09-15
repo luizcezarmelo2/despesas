@@ -22,6 +22,7 @@
             --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.07);
             --border-radius: 6px;
         }
+
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
@@ -32,83 +33,302 @@
             -moz-osx-font-smoothing: grayscale;
             font-size: 14px;
         }
+
         #login-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
             backdrop-filter: blur(4px);
-            display: flex; justify-content: center; align-items: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             z-index: 1000;
             transition: opacity 0.3s ease;
         }
+
         #login-box {
-            background: var(--surface-color); padding: 24px;
-            border-radius: var(--border-radius); box-shadow: var(--shadow-md);
-            text-align: center; width: 90%; max-width: 320px;
+            background: var(--surface-color);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--shadow-md);
+            text-align: center;
+            width: 90%;
+            max-width: 320px;
         }
-        #login-box h2 { margin-top: 0; margin-bottom: 16px; font-size: 1.2rem; }
-        #login-box p { margin-bottom: 20px; color: var(--text-color-secondary); font-size: 0.9rem; }
+
+        #login-box h2 {
+            margin-top: 0;
+            margin-bottom: 16px;
+            font-size: 1.2rem;
+        }
+
+        #login-box p {
+            margin-bottom: 20px;
+            color: var(--text-color-secondary);
+            font-size: 0.9rem;
+        }
+
         #passcode-input {
-            width: calc(100% - 24px); padding: 10px 12px; font-size: 1.5rem;
-            text-align: center; letter-spacing: 0.5em;
-            border: 1px solid var(--border-color); border-radius: var(--border-radius);
+            width: calc(100% - 24px);
+            padding: 10px 12px;
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.5em;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
             margin-bottom: 20px;
         }
-        #passcode-input:focus { outline: none; border-color: var(--accent-color); box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25); }
+
+        #passcode-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
         #login-button {
-            width: 100%; padding: 12px; background-color: var(--accent-color);
-            color: white; border: none; border-radius: var(--border-radius);
-            font-size: 1rem; font-weight: 600; cursor: pointer;
+            width: 100%;
+            padding: 12px;
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
             transition: background-color 0.2s;
         }
-        #login-button:hover { background-color: var(--accent-color-hover); }
-        .container { max-width: 1200px; margin: auto; padding: 0; }
-        h1 { font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 28px; }
-        h2 { font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 0; margin-bottom: 20px; }
-        .month-navigation { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 28px; gap: 8px; }
-        #currentMonthYear { margin: 0 10px; font-size: 1.25rem; font-weight: 600; white-space: nowrap; }
-        .month-navigation button {
-            background-color: var(--surface-color); border: 1px solid var(--border-color);
-            cursor: pointer; border-radius: var(--border-radius);
-            transition: all 0.2s ease-in-out; box-shadow: var(--shadow-sm);
-            display: flex; align-items: center; justify-content: center;
-            height: 38px; font-weight: 500;
+
+        #login-button:hover {
+            background-color: var(--accent-color-hover);
         }
-        .month-navigation button:hover { border-color: var(--accent-color); color: var(--accent-color); }
-        #prevMonthBtn, #nextMonthBtn { width: 38px; padding: 0; font-size: 1.25rem; }
-        #saveDataBtn, #restoreDataBtn, #todayBtn, #clearAllBtn { width: auto; padding: 0 16px; font-size: 0.9rem; color: var(--accent-color); }
-        #todayBtn { color: #28a745; border-color: #28a745; }
-        #todayBtn:hover { background-color: #28a745; color: white; }
-        #clearAllBtn { color: var(--danger-color); border-color: var(--danger-color); }
-        #clearAllBtn:hover { background-color: var(--danger-color); color: white; }
-        #saveDataBtn:hover, #restoreDataBtn:hover { background-color: var(--accent-color); color: var(--surface-color); }
-        .summary-box { background-color: var(--surface-color); padding: 20px; border-radius: var(--border-radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
-        .summary-box h3 { margin-top: 0; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; color: var(--text-color-secondary); }
-        .summary-box #totalGeral { font-size: 2rem; font-weight: 700; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-        .grid-item { background-color: var(--surface-color); padding: 20px; border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
-        .full-width-item { grid-column: 1 / -1; }
-        table { width: 100%; border-collapse: collapse; flex-grow: 1; }
-        th, td { padding: 6px 10px; text-align: left; border: none; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
-        th { font-weight: 600; color: var(--text-color-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom-width: 2px; }
-        td input[type="checkbox"] { width: 16px; height: 16px; cursor: pointer; }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover { background-color: var(--bg-color); }
-        td[contenteditable="true"]:focus { outline: none; background-color: #e9f2ff; box-shadow: 0 0 0 2px var(--accent-color); }
-        tfoot { border-top: 2px solid var(--text-color-primary); }
-        tfoot td { font-weight: 600; font-size: 0.9rem; }
-        .card-header { display: flex; align-items: center; gap: 10px; }
-        .nubank-header { border-bottom-color: var(--nubank-color); }
-        .c6-header { border-bottom-color: var(--c6-color); }
+
+        .container {
+            max-width: 1200px;
+            margin: auto;
+            padding: 0;
+        }
+
+        h1 {
+            font-size: 1.75rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 28px;
+        }
+
+        h2 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+        }
+
+        .month-navigation {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 28px;
+            gap: 8px;
+        }
+
+        #currentMonthYear {
+            margin: 0 10px;
+            font-size: 1.25rem;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .month-navigation button {
+            background-color: var(--surface-color);
+            border: 1px solid var(--border-color);
+            cursor: pointer;
+            border-radius: var(--border-radius);
+            transition: all 0.2s ease-in-out;
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 38px;
+            font-weight: 500;
+        }
+
+        .month-navigation button:hover {
+            border-color: var(--accent-color);
+            color: var(--accent-color);
+        }
+
+        #prevMonthBtn, #nextMonthBtn {
+            width: 38px;
+            padding: 0;
+            font-size: 1.25rem;
+        }
+
+        #saveDataBtn, #restoreDataBtn, #todayBtn, #clearAllBtn {
+            width: auto;
+            padding: 0 16px;
+            font-size: 0.9rem;
+            color: var(--accent-color);
+        }
+
+        #todayBtn {
+            color: #28a745;
+            border-color: #28a745;
+        }
+
+        #todayBtn:hover {
+            background-color: #28a745;
+            color: white;
+        }
+
+        #clearAllBtn {
+            color: var(--danger-color);
+            border-color: var(--danger-color);
+        }
+
+        #clearAllBtn:hover {
+            background-color: var(--danger-color);
+            color: white;
+        }
+
+        #saveDataBtn:hover, #restoreDataBtn:hover {
+            background-color: var(--accent-color);
+            color: var(--surface-color);
+        }
+
+        .summary-box {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            text-align: center;
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+
+        .summary-box h3 {
+            margin-top: 0;
+            margin-bottom: 8px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            color: var(--text-color-secondary);
+        }
+
+        .summary-box #totalGeral {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+        }
+
+        .grid-item {
+            background-color: var(--surface-color);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .full-width-item {
+            grid-column: 1 / -1;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            flex-grow: 1;
+        }
+
+        th, td {
+            padding: 6px 10px;
+            text-align: left;
+            border: none;
+            border-bottom: 1px solid var(--border-color);
+            vertical-align: middle;
+        }
+
+        th {
+            font-weight: 600;
+            color: var(--text-color-secondary);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom-width: 2px;
+        }
+
+        td input[type="checkbox"] {
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: var(--bg-color);
+        }
+
+        td[contenteditable="true"]:focus {
+            outline: none;
+            background-color: #e9f2ff;
+            box-shadow: 0 0 0 2px var(--accent-color);
+        }
+
+        tfoot {
+            border-top: 2px solid var(--text-color-primary);
+        }
+
+        tfoot td {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .nubank-header {
+            border-bottom-color: var(--nubank-color);
+        }
+
+        .c6-header {
+            border-bottom-color: var(--c6-color);
+        }
+
         #status {
-            position: fixed; bottom: 20px; right: 20px;
-            background-color: var(--text-color-primary); color: var(--surface-color);
-            padding: 10px 16px; border-radius: var(--border-radius);
-            font-size: 0.9rem; box-shadow: var(--shadow-md);
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: var(--text-color-primary);
+            color: var(--surface-color);
+            padding: 10px 16px;
+            border-radius: var(--border-radius);
+            font-size: 0.9rem;
+            box-shadow: var(--shadow-md);
             transition: opacity 0.5s, transform 0.5s;
-            opacity: 0; transform: translateY(20px);
+            opacity: 0;
+            transform: translateY(20px);
             pointer-events: none;
         }
-        #status[style*="opacity: 1"] { transform: translateY(0); pointer-events: auto; }
+
+        #status[style*="opacity: 1"] {
+            transform: translateY(0);
+            pointer-events: auto;
+        }
     </style>
 </head>
 <body>
@@ -144,7 +364,7 @@
                         <tr>
                             <th>Descrição</th>
                             <th>Valor (R$)</th>
-                            <th>Conferido</th>
+                            <th>Pago</th>
                         </tr>
                     </thead>
                     <tbody id="fixedExpensesTbody"></tbody>
@@ -163,9 +383,9 @@
                     <thead>
                         <tr>
                             <th>Descrição</th>
-                            <th>Valor</th>
-                            <th>Parcela</th>
-                            <th>Conferido</th>
+                            <th>Valor Parcela (R$)</th>
+                            <th>Parcela (Ex: 01/12)</th>
+                            <th>Pago</th>
                         </tr>
                     </thead>
                     <tbody id="nubankTbody"></tbody>
@@ -184,9 +404,9 @@
                     <thead>
                         <tr>
                             <th>Descrição</th>
-                            <th>Valor</th>
-                            <th>Parcela</th>
-                            <th>Conferido</th>
+                            <th>Valor Parcela (R$)</th>
+                            <th>Parcela (Ex: 01/12)</th>
+                            <th>Pago</th>
                         </tr>
                     </thead>
                     <tbody id="c6Tbody"></tbody>
@@ -200,13 +420,13 @@
                 </table>
             </div>
             <div class="grid-item full-width-item">
-                <h2>Parcelas Ativas</h2>
+                <h2>Resumo de Todas as Parcelas Ativas</h2>
                 <table id="installmentsSummaryTable">
                     <thead>
                         <tr>
                             <th>Descrição</th>
                             <th>Cartão</th>
-                            <th>Valor</th>
+                            <th>Valor Parcela (R$)</th>
                             <th>Parcela</th>
                             <th>Mês de Vencimento</th>
                         </tr>
@@ -237,10 +457,12 @@
             messagingSenderId: "270308100761",
             appId: "1:270308100761:web:ae34fde6d5ae86b67b0608"
         };
+
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
         let current_date = new Date();
         let debounceTimer;
+
         const ui = {
             loginOverlay: document.getElementById('login-overlay'),
             loginTitle: document.getElementById('login-title'),
@@ -265,6 +487,7 @@
             totalGeral: document.getElementById('totalGeral'),
             status: document.getElementById('status')
         };
+
         document.addEventListener('DOMContentLoaded', initLogin);
 
         function initLogin() {
@@ -278,10 +501,12 @@
                 }
             }, { onlyOnce: true });
         }
+
         function setupLoginScreen(correctPasscode) {
             ui.loginTitle.textContent = "Acessar Painel";
             ui.loginMessage.textContent = "Digite seu código de 4 dígitos para continuar.";
             ui.loginButton.textContent = "Entrar";
+
             const handleLogin = () => {
                 if (ui.passcodeInput.value === correctPasscode) {
                     ui.loginOverlay.style.opacity = '0';
@@ -292,13 +517,18 @@
                     ui.passcodeInput.value = '';
                 }
             };
+
             ui.loginButton.addEventListener('click', handleLogin);
-            ui.passcodeInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleLogin(); });
+            ui.passcodeInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') handleLogin();
+            });
         }
+
         function setupFirstAccessScreen() {
             ui.loginTitle.textContent = "Primeiro Acesso";
             ui.loginMessage.textContent = "Crie um código de 4 dígitos para proteger seus dados.";
             ui.loginButton.textContent = "Salvar e Entrar";
+
             const handleSetup = () => {
                 const newPasscode = ui.passcodeInput.value;
                 if (newPasscode && newPasscode.length === 4 && !isNaN(newPasscode)) {
@@ -311,28 +541,49 @@
                     alert('Por favor, insira um código de 4 números.');
                 }
             };
+
             ui.loginButton.addEventListener('click', handleSetup);
-            ui.passcodeInput.addEventListener('keyup', (e) => { if (e.key === 'Enter') handleSetup(); });
+            ui.passcodeInput.addEventListener('keyup', (e) => {
+                if (e.key === 'Enter') handleSetup();
+            });
         }
+
         function startApp() {
+            // MODIFICADO: Avança a data em um mês na inicialização da página
+            current_date.setMonth(current_date.getMonth() + 1);
             updateMonthDisplay();
             loadData();
+
             ui.prevMonthBtn.addEventListener('click', () => changeMonth(-1));
             ui.nextMonthBtn.addEventListener('click', () => changeMonth(1));
-            ui.todayBtn.addEventListener('click', () => { current_date = new Date(); updateMonthDisplay(); loadData(); });
+
+            ui.todayBtn.addEventListener('click', () => {
+                // MODIFICADO: O botão "Hoje" agora aponta para o próximo mês em relação à data atual.
+                current_date = new Date();
+                current_date.setMonth(current_date.getMonth() + 1);
+                updateMonthDisplay();
+                loadData();
+            });
+
             ui.saveDataBtn.addEventListener('click', saveDataAsTxt);
             ui.restoreDataBtn.addEventListener('click', () => ui.restoreFileInput.click());
             ui.restoreFileInput.addEventListener('change', restoreDataFromFile);
             ui.clearAllBtn.addEventListener('click', clearAllData);
+
             setupTableListeners(ui.fixedExpensesTable, 'fixed');
             setupTableListeners(ui.nubankTable, 'nubank');
             setupTableListeners(ui.c6Table, 'c6');
         }
+
         function saveDataAsTxt() {
             const dataRef = ref(database, 'expenses/');
             onValue(dataRef, (snapshot) => {
                 const data = snapshot.val();
-                if (!data) { showStatus('Não há dados para salvar.', 3000); return; }
+                if (!data) {
+                    showStatus('Não há dados para salvar.', 3000);
+                    return;
+                }
+
                 const dataStr = JSON.stringify(data, null, 2);
                 const blob = new Blob([dataStr], { type: 'application/json' });
                 const url = URL.createObjectURL(blob);
@@ -347,11 +598,15 @@
                 showStatus('Backup gerado com sucesso!', 3000);
             }, { onlyOnce: true });
         }
+
         function restoreDataFromFile(event) {
             if (!confirm('ATENÇÃO! Isto irá substituir TODOS os dados existentes na nuvem pelos dados do arquivo. Deseja continuar?')) {
-                event.target.value = null; return;
+                event.target.value = null;
+                return;
             }
-            const file = event.target.files[0]; if (!file) return;
+            const file = event.target.files[0];
+            if (!file) return;
+
             const reader = new FileReader();
             reader.onload = (e) => {
                 try {
@@ -360,29 +615,45 @@
                     set(dataRef, parsedData).then(() => {
                         showStatus('Dados restaurados com sucesso!', 3000);
                         loadData();
-                    }).catch(err => { showStatus('Erro ao salvar dados restaurados.', 5000); console.error(err); });
-                } catch (error) { showStatus('Erro: Arquivo de backup inválido.', 5000); console.error("Parse error:", error); }
-                finally { event.target.value = null; }
+                    }).catch(err => {
+                        showStatus('Erro ao salvar dados restaurados.', 5000);
+                        console.error(err);
+                    });
+                } catch (error) {
+                    showStatus('Erro: Arquivo de backup inválido.', 5000);
+                    console.error("Parse error:", error);
+                } finally {
+                    event.target.value = null;
+                }
             };
             reader.readAsText(file);
         }
+
         function changeMonth(direction) {
             saveData(true);
             current_date.setMonth(current_date.getMonth() + direction);
             updateMonthDisplay();
             loadData();
         }
+
         function updateMonthDisplay() {
             const month = current_date.toLocaleString('pt-BR', { month: 'long' });
             const year = current_date.getFullYear();
             ui.currentMonthYear.textContent = `${month.charAt(0).toUpperCase() + month.slice(1)} de ${year}`;
         }
-        function getMonthYearKey(date) { return `${date.getFullYear()}_${(date.getMonth() + 1).toString().padStart(2, '0')}`; }
+
+        function getMonthYearKey(date) {
+            return `${date.getFullYear()}_${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+        }
+
         function showStatus(message, duration = 3000) {
             ui.status.textContent = message;
             ui.status.style.opacity = '1';
-            setTimeout(() => { ui.status.style.opacity = '0'; }, duration);
+            setTimeout(() => {
+                ui.status.style.opacity = '0';
+            }, duration);
         }
+
         function saveData(force = false) {
             clearTimeout(debounceTimer);
             const saveAction = () => {
@@ -393,12 +664,18 @@
                     c6: parseTableData(ui.c6Table),
                 };
                 set(ref(database, 'expenses/' + monthKey), dataToSave).then(() => showStatus('Salvo!')).catch((error) => {
-                    console.error("Erro ao salvar: ", error); showStatus('Erro ao salvar!', 5000);
+                    console.error("Erro ao salvar: ", error);
+                    showStatus('Erro ao salvar!', 5000);
                 });
             };
-            if (force) { saveAction(); }
-            else { debounceTimer = setTimeout(saveAction, 2000); }
+
+            if (force) {
+                saveAction();
+            } else {
+                debounceTimer = setTimeout(saveAction, 2000);
+            }
         }
+
         function loadData() {
             const monthKey = getMonthYearKey(current_date);
             const prevMonthDate = new Date(current_date);
@@ -406,6 +683,7 @@
             const prevMonthKey = getMonthYearKey(prevMonthDate);
             const currentMonthRef = ref(database, 'expenses/' + monthKey);
             const prevMonthRef = ref(database, 'expenses/' + prevMonthKey);
+
             onValue(currentMonthRef, (currentSnapshot) => {
                 const currentData = currentSnapshot.val() || { fixed: [], nubank: [], c6: [] };
                 onValue(prevMonthRef, (prevSnapshot) => {
@@ -418,17 +696,22 @@
                         nubank: combineData(currentData.nubank, continuingNubank),
                         c6: combineData(currentData.c6, continuingC6)
                     };
+
                     populateTable(ui.fixedExpensesTable, combinedData.fixed);
                     populateTable(ui.nubankTable, combinedData.nubank);
                     populateTable(ui.c6Table, combinedData.c6);
+
                     [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(ensureEmptyRow);
                     updateAllTotals();
                     set(currentMonthRef, combinedData);
                 }, { onlyOnce: true });
             }, { onlyOnce: true });
         }
+
         function combineData(currentData, prevData) {
-            if (!currentData || currentData.length === 0) { return prevData; }
+            if (!currentData || currentData.length === 0) {
+                return prevData;
+            }
             const prevMap = new Map();
             prevData.forEach(item => {
                 const description = item[0] || '';
@@ -439,31 +722,43 @@
                 const description = item[0] || '';
                 const installment = item[2] || '';
                 const key = description + installment;
-                if (prevMap.has(key)) { prevMap.delete(key); }
+                if (prevMap.has(key)) {
+                    prevMap.delete(key);
+                }
             });
             return [...currentData, ...Array.from(prevMap.values())];
         }
+
         function clearAllData() {
-            if (!confirm('ATENÇÃO! Isso vai apagar todos os dados visíveis deste mês. Deseja continuar?')) { return; }
+            if (!confirm('ATENÇÃO! Isso vai apagar todos os dados visíveis deste mês. Deseja continuar?')) {
+                return;
+            }
             const monthKey = getMonthYearKey(current_date);
             set(ref(database, 'expenses/' + monthKey), null).then(() => {
                 showStatus('Dados do mês atual limpos com sucesso!', 3000);
                 [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(t => t.innerHTML = '');
                 [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(ensureEmptyRow);
                 updateAllTotals();
-            }).catch((error) => { console.error("Erro ao limpar dados: ", error); showStatus('Erro ao limpar os dados!', 5000); });
+            }).catch((error) => {
+                console.error("Erro ao limpar dados: ", error);
+                showStatus('Erro ao limpar os dados!', 5000);
+            });
         }
+
         function processContinuingInstallments(installments) {
             return installments.reduce((acc, item) => {
                 const parts = (item[2] || "").match(/(\d+)\/(\d+)/);
                 if (parts && parts.length === 3) {
                     const current = parseInt(parts[1], 10);
                     const total = parseInt(parts[2], 10);
-                    if (current < total) { acc.push([item[0], item[1], `${current + 1}/${total}`, false]); }
+                    if (current < total) {
+                        acc.push([item[0], item[1], `${current + 1}/${total}`, false]);
+                    }
                 }
                 return acc;
             }, []);
         }
+
         function populateTable(tbody, dataArray) {
             tbody.innerHTML = '';
             const hasCheckbox = tbody.id !== 'installmentsSummaryTable';
@@ -485,6 +780,7 @@
                 }
             });
         }
+
         function parseTableData(tbody) {
             return Array.from(tbody.rows).map(row => {
                 const rowData = Array.from(row.cells).map(cell => {
@@ -494,14 +790,19 @@
                     return cell.textContent.trim();
                 });
                 const checkboxState = rowData.pop();
-                if (rowData.some(cellData => cellData !== '')) { return [...rowData, checkboxState]; }
+                if (rowData.some(cellData => cellData !== '')) {
+                    return [...rowData, checkboxState];
+                }
                 return null;
             }).filter(rowData => rowData !== null);
         }
+
         function ensureEmptyRow(tbody) {
             const isRowEmpty = (row) => {
                 for (let i = 0; i < row.cells.length - 1; i++) {
-                    if (row.cells[i].textContent.trim() !== '') { return false; }
+                    if (row.cells[i].textContent.trim() !== '') {
+                        return false;
+                    }
                 }
                 return true;
             }
@@ -509,6 +810,7 @@
                 addNewRow(tbody);
             }
         }
+
         function addNewRow(tbody, focusFirstCell = false) {
             const newRow = tbody.insertRow();
             const colCount = tbody.parentElement.tHead.rows[0].cells.length;
@@ -523,18 +825,14 @@
             if (focusFirstCell) newRow.cells[0].focus();
         }
 
-        // ---------- FUNÇÃO MODIFICADA ABAIXO ----------
         function setupTableListeners(tbody, type) {
-            // FORMATA VALORES PARA DUAS CASAS DECIMAIS AO SAIR DA CÉLULA
             tbody.addEventListener('focusout', (e) => {
                 if (e.target.tagName === 'TD' && e.target.hasAttribute('contenteditable')) {
                     const cell = e.target;
-                    // A coluna de valor é sempre a segunda (índice 1)
                     if (cell.cellIndex === 1) {
                         const text = cell.textContent.trim();
                         if (text) {
                             let number = parseCurrency(text);
-                            // Formata o número para o padrão brasileiro com 2 casas decimais
                             cell.textContent = number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                             updateTotals(type);
                             saveData();
@@ -542,7 +840,6 @@
                     }
                 }
             });
-
             tbody.addEventListener('input', (e) => {
                 if (e.target.hasAttribute('contenteditable')) {
                     updateTotals(type);
@@ -550,40 +847,39 @@
                     ensureEmptyRow(tbody);
                 }
             });
-
             tbody.addEventListener('change', (e) => {
                 if (e.target.type === 'checkbox') {
                     saveData();
                 }
             });
-
-            // COMPORTAMENTO DA TECLA ENTER
             tbody.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter' && e.target.tagName === 'TD' && !e.shiftKey) {
                     e.preventDefault();
                     const cell = e.target;
                     const row = cell.parentElement;
                     const nextRow = row.nextElementSibling;
-                    
-                    // Se houver uma próxima linha, move o foco para a célula na mesma coluna
+
                     if (nextRow && nextRow.cells[cell.cellIndex] && nextRow.cells[cell.cellIndex].hasAttribute('contenteditable')) {
                         nextRow.cells[cell.cellIndex].focus();
                     } else {
-                        // Se estiver na última linha, cria uma nova linha
                         addNewRow(tbody, true);
                     }
                 }
             });
         }
-        // ---------- FIM DA FUNÇÃO MODIFICADA ----------
 
-        function formatCurrency(value) { return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }); }
-        function parseCurrency(text) { return parseFloat(String(text).replace(/[R$\s.]/g, '').replace(',', '.')) || 0; }
+        function formatCurrency(value) {
+            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function parseCurrency(text) {
+            return parseFloat(String(text).replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+        }
+
         function calculateColumnTotal(tbody, colIndex) {
             return Array.from(tbody.rows).reduce((total, row) => total + (row.cells[colIndex] ? parseCurrency(row.cells[colIndex].textContent) : 0), 0);
         }
 
-        // ---------- FUNÇÃO MODIFICADA ABAIXO ----------
         function updateInstallmentSummary() {
             ui.installmentsSummaryTable.innerHTML = '';
             const allInstallmentsRaw = [
@@ -596,53 +892,56 @@
                 const valueText = data[1];
                 const installmentText = data[2] || "";
                 const parts = installmentText.match(/(\d+)\/(\d+)/);
+
                 if (!parts || !description || !valueText) return null;
 
                 const currentPart = parseInt(parts[1], 10);
                 const totalParts = parseInt(parts[2], 10);
                 const remaining = totalParts - currentPart;
+
                 if (remaining < 0) return null;
 
                 const dueDate = new Date(current_date);
                 dueDate.setMonth(dueDate.getMonth() + remaining);
                 dueDate.setDate(1);
+
                 const value = parseCurrency(valueText);
+
                 return { description, card, value, installmentText, dueDate };
             }).filter(item => item !== null);
 
             installmentsWithData.sort((a, b) => a.dueDate - b.dueDate);
 
             let totalInstallmentsValue = 0;
-
             installmentsWithData.forEach(item => {
                 totalInstallmentsValue += item.value;
                 const endMonth = item.dueDate.toLocaleString('pt-BR', { month: 'long' });
                 const endYear = item.dueDate.getFullYear();
+
                 const row = ui.installmentsSummaryTable.insertRow();
                 row.insertCell().textContent = item.description;
                 row.insertCell().textContent = item.card;
-                // Nova célula para o valor, formatado
                 const valueCell = row.insertCell();
                 valueCell.textContent = item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                 row.insertCell().textContent = item.installmentText;
                 row.insertCell().textContent = `${endMonth.charAt(0).toUpperCase() + endMonth.slice(1)}/${endYear}`;
             });
-            // Atualiza o total no rodapé da tabela
+
             document.getElementById('installmentsTotal').textContent = formatCurrency(totalInstallmentsValue);
         }
-        // ---------- FIM DA FUNÇÃO MODIFICADA ----------
 
         function updateTotals(type) {
             const totalsMap = {
                 fixed: { el: ui.fixedTotal, table: ui.fixedExpensesTable },
                 nubank: { el: ui.nubankTotal, table: ui.nubankTable },
-                c6: { el: ui.c6Total, table: ui.c6Table }
+                c6: { el: ui.c6Total, table: ui.c6Tbody }
             };
             if (totalsMap[type]) {
                 totalsMap[type].el.textContent = formatCurrency(calculateColumnTotal(totalsMap[type].table, 1));
             }
             updateAllTotals();
         }
+
         function updateAllTotals() {
             const fixedTotal = calculateColumnTotal(ui.fixedExpensesTable, 1);
             const nubankTotal = calculateColumnTotal(ui.nubankTable, 1);
@@ -656,5 +955,3 @@
     </script>
 </body>
 </html>
-
-
