@@ -1,245 +1,209 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"> 
-    <title>Controle de Despesas v2.0</title>
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
-        :root {
-            --bg-color: #f8f9fa;
-            --surface-color: #ffffff;
-            --text-color-primary: #000000;
-            --text-color-secondary: #495057;
-            --border-color: #dee2e6;
-            --accent-color: #007bff;
-            --accent-color-hover: #0056b3;
-            --nubank-color: #820ad1;
-            --c6-color: #2b2b2b;
-            --success-color: #28a745;
-            --danger-color: #dc3545;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
-            --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.07);
-            --border-radius: 6px;
-        }
-        body {
-            font-family: 'Inter', sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color-primary);
-            margin: 0;
-            padding: 24px;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            font-size: 14px;
-        }
-        .container { max-width: 1200px; margin: auto; padding: 0; }
-        h1 { font-size: 1.75rem; font-weight: 700; text-align: center; margin-bottom: 28px; }
-        h2 { font-size: 1.1rem; font-weight: 600; border-bottom: 1px solid var(--border-color); padding-bottom: 10px; margin-top: 0; margin-bottom: 20px; }
-        .month-navigation { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; margin-bottom: 28px; gap: 8px; }
-        #currentMonthYear { margin: 0 10px; font-size: 1.25rem; font-weight: 600; white-space: nowrap; }
-        .month-navigation button { background-color: var(--surface-color); border: 1px solid var(--border-color); cursor: pointer; border-radius: var(--border-radius); transition: all 0.2s ease-in-out; box-shadow: var(--shadow-sm); display: flex; align-items: center; justify-content: center; height: 38px; font-weight: 500; }
-        .month-navigation button:hover { border-color: var(--accent-color); color: var(--accent-color); }
-        #prevMonthBtn, #nextMonthBtn { width: 38px; padding: 0; font-size: 1.25rem; }
-        #migrateDataBtn { width: auto; padding: 0 16px; font-size: 0.9rem; background-color: var(--accent-color); color: var(--surface-color); border-color: var(--accent-color); }
-        #migrateDataBtn:hover { background-color: var(--accent-color-hover); border-color: var(--accent-color-hover); color: var(--surface-color); }
-        #saveDataBtn, #restoreDataBtn { width: auto; padding: 0 16px; font-size: 0.9rem; color: var(--accent-color); }
-        #saveDataBtn:hover, #restoreDataBtn:hover { background-color: var(--accent-color); color: var(--surface-color); }
-        .summary-box { background-color: var(--surface-color); padding: 20px; border-radius: var(--border-radius); text-align: center; border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); margin-bottom: 24px; }
-        .summary-box h3 { margin-top: 0; margin-bottom: 8px; font-size: 0.9rem; font-weight: 500; color: var(--text-color-secondary); }
-        .summary-box #totalGeral { font-size: 2rem; font-weight: 700; }
-        .grid-container { display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 20px; }
-        .grid-item { background-color: var(--surface-color); padding: 20px; border-radius: var(--border-radius); border: 1px solid var(--border-color); box-shadow: var(--shadow-sm); display: flex; flex-direction: column; }
-        .full-width-item { grid-column: 1 / -1; }
-        table { width: 100%; border-collapse: collapse; flex-grow: 1; }
-        th, td { padding: 6px 10px; text-align: left; border: none; border-bottom: 1px solid var(--border-color); vertical-align: middle; }
-        th { font-weight: 600; color: var(--text-color-secondary); font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; border-bottom-width: 2px; }
-        tbody tr:last-child td { border-bottom: none; }
-        tbody tr:hover { background-color: var(--bg-color); }
-        td[contenteditable="true"]:focus { outline: none; background-color: #e9f2ff; box-shadow: 0 0 0 2px var(--accent-color); }
-        tfoot { border-top: 2px solid var(--text-color-primary); }
-        tfoot td { font-weight: 600; font-size: 0.9rem; }
-        .card-header { display: flex; align-items: center; gap: 10px; }
-        .nubank-header { border-bottom-color: var(--nubank-color); }
-        .c6-header { border-bottom-color: var(--c6-color); }
-        #status { position: fixed; bottom: 20px; right: 20px; background-color: var(--text-color-primary); color: var(--surface-color); padding: 10px 16px; border-radius: var(--border-radius); font-size: 0.9rem; box-shadow: var(--shadow-md); transition: opacity 0.5s, transform 0.5s; opacity: 0; transform: translateY(20px); pointer-events: none; }
-        #status[style*="opacity: 1"] { transform: translateY(0); pointer-events: auto; }
-        /* Login */
-        #login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: #f0f2f5; display: none; justify-content: center; align-items: center; z-index: 1000; }
-        #login-form { background-color: #fff; padding: 30px; border-radius: 8px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); text-align: center; }
-        #login-form h2 { margin-top: 0; }
-        #login-form input { padding: 10px; margin: 10px 0; width: 250px; border: 1px solid #ccc; border-radius: 4px; }
-        #password-container { position: relative; }
-        #password-container button { position: absolute; right: 5px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 1.2rem; }
-        #login-button { background-color: #007bff; color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 1rem; width: 100%; }
-        #login-button:hover { background-color: #0056b3; }
-        #error-message { color: red; margin-top: 10px; font-size: 0.9rem; display: none; }
-        #setup-message { margin-top: 15px; }
-        #set-password-button { background-color: var(--success-color); color: white; border: none; padding: 12px 20px; border-radius: 4px; cursor: pointer; font-size: 1rem; width: 100%; }
-        #set-password-button:hover { background-color: #218838; }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Controle de Despesas v2.0</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    :root {
+      --bg-color: #f8f9fa;
+      --surface-color: #ffffff;
+      --text-color-primary: #000000;
+      --text-color-secondary: #495057;
+      --border-color: #dee2e6;
+      --accent-color: #007bff;
+      --accent-color-hover: #0056b3;
+      --nubank-color: #820ad1;
+      --c6-color: #2b2b2b;
+      --success-color: #28a745;
+      --danger-color: #dc3545;
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+      --shadow-md: 0 3px 6px rgba(0, 0, 0, 0.07);
+      --border-radius: 6px;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color-primary);
+      margin: 0;
+      padding: 24px;
+      font-size: 14px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: auto;
+      padding: 0;
+    }
+
+    h1 { text-align:center; margin-bottom:20px; }
+
+    /* Tela de Login */
+    #loginScreen {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: var(--bg-color);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+    }
+    #loginBox {
+      background: var(--surface-color);
+      padding: 24px;
+      border-radius: var(--border-radius);
+      box-shadow: var(--shadow-md);
+      text-align: center;
+    }
+    #loginBox input {
+      font-size: 1.2rem;
+      padding: 8px;
+      text-align: center;
+      margin-bottom: 12px;
+      width: 120px;
+    }
+    #loginBox button {
+      background: var(--accent-color);
+      color: #fff;
+      padding: 8px 16px;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+    }
+    #loginError { color: var(--danger-color); margin-top: 8px; font-size: 0.9rem; }
+  </style>
 </head>
 <body>
-<div id="login-screen">
-    <div id="login-form">
-        <h2 id="login-title">Acesso Restrito</h2>
-        <div id="password-container">
-            <input type="password" id="password-input" placeholder="Digite a senha" onkeypress="handleKeyPress(event)">
-            <button id="toggle-password" onclick="togglePasswordVisibility()">👁️</button>
-        </div>
-        <p id="error-message">Senha incorreta. Tente novamente.</p>
-        <button id="login-button" onclick="checkPassword()">Entrar</button>
-        <div id="setup-message" style="display: none; margin-top: 15px;">
-            <p>Ainda não há senha. Defina uma para continuar.</p>
-            <button id="set-password-button" onclick="setPassword()">Definir Senha</button>
-        </div>
-    </div>
-</div>
 
-<div class="container" id="main-content" style="display: none;">
-    <!-- Todo o seu HTML do app permanece intacto -->
+  <!-- Tela de Login -->
+  <div id="loginScreen">
+    <div id="loginBox">
+      <h2>Digite a senha</h2>
+      <input type="password" id="passwordInput" maxlength="12" pattern="[0-9]*" inputmode="numeric" />
+      <br>
+      <button id="loginBtn">Entrar</button>
+      <div id="loginError"></div>
+    </div>
+  </div>
+
+  <!-- App -->
+  <div class="container" id="appContainer" style="display:none">
     <h1>Controle de Despesas</h1>
+
     <div class="month-navigation">
-        <button id="prevMonthBtn" title="Mês Anterior">&lt;</button>
-        <h2 id="currentMonthYear"></h2>
-        <button id="nextMonthBtn" title="Próximo Mês">&gt;</button>
-        <button id="migrateDataBtn" title="Copiar dados para o próximo mês">Migrar</button>
-        <button id="saveDataBtn" title="Salvar backup local em .txt">Salvar</button>
-        <button id="restoreDataBtn" title="Restaurar dados a partir de um backup">Resgatar</button>
-        <input type="file" id="restoreFileInput" accept=".txt,.json" style="display: none;">
+      <button id="prevMonthBtn">&lt;</button>
+      <h2 id="currentMonthYear" style="border:none; margin:0;"></h2>
+      <button id="nextMonthBtn">&gt;</button>
+      <button id="migrateDataBtn">Migrar</button>
+      <button id="saveDataBtn">Salvar</button>
+      <button id="restoreDataBtn">Resgatar</button>
+      <input type="file" id="restoreFileInput" accept=".txt,.json" style="display:none;">
     </div>
+
     <div class="summary-box">
-        <h3>Total Geral de Despesas do Mês</h3>
-        <div id="totalGeral">R$ 0,00</div>
+      <h3>Total Geral</h3>
+      <div id="totalGeral">R$ 0,00</div>
     </div>
+
     <div class="grid-container">
-        <div class="grid-item">
-            <h2>Despesas Fixas</h2>
-            <table id="fixedExpensesTable">
-                <thead> <tr> <th>Descrição</th> <th>Valor (R$)</th> </tr> </thead>
-                <tbody></tbody>
-                <tfoot> <tr class="total-row"> <td><strong>Total Fixo</strong></td> <td id="fixedTotal">R$ 0,00</td> </tr> </tfoot>
-            </table>
-        </div>
-        <div class="grid-item">
-            <h2 class="card-header nubank-header"><span>Nubank</span></h2>
-            <table id="nubankTable">
-                <thead> <tr> <th>Descrição</th> <th>Valor Parcela (R$)</th> <th>Parcela (Ex: 01/12)</th> </tr> </thead>
-                <tbody></tbody>
-                <tfoot> <tr class="total-row"> <td colspan="1"><strong>Total Nubank</strong></td> <td id="nubankTotal" colspan="2">R$ 0,00</td> </tr> </tfoot>
-            </table>
-        </div>
-        <div class="grid-item">
-            <h2 class="card-header c6-header"><span>C6 Bank</span></h2>
-            <table id="c6Table">
-                <thead> <tr> <th>Descrição</th> <th>Valor Parcela (R$)</th> <th>Parcela (Ex: 01/12)</th> </tr> </thead>
-                <tbody></tbody>
-                <tfoot> <tr class="total-row"> <td colspan="1"><strong>Total C6</strong></td> <td id="c6Total" colspan="2">R$ 0,00</td> </tr> </tfoot>
-            </table>
-        </div>
-        <div class="grid-item full-width-item">
-            <h2>Resumo de Todas as Parcelas Ativas</h2>
-            <table id="installmentsSummaryTable">
-                <thead> <tr> <th>Descrição</th> <th>Cartão</th> <th>Parcela</th> <th>Mês de Vencimento</th> </tr> </thead>
-                <tbody></tbody>
-            </table>
-        </div>
+      <div class="grid-item">
+        <h2>Despesas Fixas</h2>
+        <table id="fixedExpensesTable">
+          <thead><tr><th>Descrição</th><th>Valor (R$)</th><th>OK</th></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td><b>Total Fixo</b></td><td id="fixedTotal">R$ 0,00</td><td></td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="grid-item">
+        <h2>Nubank</h2>
+        <table id="nubankTable">
+          <thead><tr><th>Descrição</th><th>Valor</th><th>Parcela</th><th>OK</th></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td><b>Total Nubank</b></td><td id="nubankTotal" colspan="3">R$ 0,00</td></tr></tfoot>
+        </table>
+      </div>
+
+      <div class="grid-item">
+        <h2>C6 Bank</h2>
+        <table id="c6Table">
+          <thead><tr><th>Descrição</th><th>Valor</th><th>Parcela</th><th>OK</th></tr></thead>
+          <tbody></tbody>
+          <tfoot><tr><td><b>Total C6</b></td><td id="c6Total" colspan="3">R$ 0,00</td></tr></tfoot>
+        </table>
+      </div>
     </div>
-</div>
-<div id="status"></div>
+  </div>
 
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+  <div id="status"></div>
 
-// --- FIREBASE CONFIGURAÇÃO ---
- // Configuração do Firebase
-        const firebaseConfig = {
-            apiKey: "AIzaSyBiikcagIm1p7wJG6DsHijkvdy1fpDBn8Y",
-            authDomain: "bd-teste-c931c.firebaseapp.com",
-            databaseURL: "https://bd-teste-c931c-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "bd-teste-c931c",
-            storageBucket: "bd-teste-c931c.appspot.com",
-            messagingSenderId: "270308100761",
-            appId: "1:270308100761:web:ae34fde6d5ae86b67b0608"
-        };
-const app = initializeApp(firebaseConfig);
-const database = getDatabase(app);
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
+    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
-// --- LOGIN ---
-const PASSWORD_NODE = 'appPassword_despesas';
-const mainContent = document.getElementById('main-content');
-const loginScreen = document.getElementById('login-screen');
-const passwordInput = document.getElementById('password-input');
-const errorMessage = document.getElementById('error-message');
-const togglePasswordBtn = document.getElementById('toggle-password');
-const setupMessage = document.getElementById('setup-message');
-const loginTitle = document.getElementById('login-title');
+    const firebaseConfig = {
+      apiKey: "AIzaSyBiikcagIm1p7wJG6DsHijkvdy1fpDBn8Y",
+      authDomain: "bd-teste-c931c.firebaseapp.com",
+      databaseURL: "https://bd-teste-c931c-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "bd-teste-c931c",
+      storageBucket: "bd-teste-c931c.appspot.com",
+      messagingSenderId: "270308100761",
+      appId: "1:270308100761:web:ae34fde6d5ae86b67b0608"
+    };
 
-let correctPassword = null;
+    const app = initializeApp(firebaseConfig);
+    const database = getDatabase(app);
+    const auth = getAuth(app);
 
-function checkPasswordStatus() {
-    const passwordRef = ref(database, PASSWORD_NODE);
-    onValue(passwordRef, (snapshot) => {
-        correctPassword = snapshot.val();
-        if (correctPassword) {
-            setupMessage.style.display = 'none';
-            loginTitle.textContent = 'Acesso Restrito';
-            document.getElementById('login-button').style.display = 'block';
-            passwordInput.placeholder = 'Digite a senha';
-        } else {
-            setupMessage.style.display = 'block';
-            loginTitle.textContent = 'Configurar Senha';
-            document.getElementById('login-button').style.display = 'none';
-            passwordInput.placeholder = 'Defina uma senha';
-        }
-        loginScreen.style.display = 'flex';
-    }, { onlyOnce: true });
-}
-
-function setPassword() {
-    const newPassword = passwordInput.value;
-    if (newPassword && newPassword.trim() !== '') {
-        set(ref(database, PASSWORD_NODE), newPassword).then(() => {
-            alert('Senha definida com sucesso!');
-            checkPasswordStatus();
-            passwordInput.value = '';
-        }).catch(error => {
-            console.error("Erro ao definir senha:", error);
+    // --- LOGIN ---
+    const loginBtn = document.getElementById('loginBtn');
+    loginBtn.addEventListener('click', () => {
+      const pass = document.getElementById('passwordInput').value;
+      const emailFixo = "app@login.com"; // defina no Firebase Auth
+      signInWithEmailAndPassword(auth, emailFixo, pass)
+        .then(() => {
+          document.getElementById('loginScreen').style.display = "none";
+          document.getElementById('appContainer').style.display = "block";
+        })
+        .catch(() => {
+          document.getElementById('loginError').textContent = "Senha incorreta";
         });
-    } else {
-        alert('Digite uma senha válida.');
-    }
-}
+    });
 
-function checkPassword() {
-    if (passwordInput.value === correctPassword) {
-        loginScreen.style.display = 'none';
-        mainContent.style.display = 'block';
-    } else {
-        errorMessage.style.display = 'block';
-        setTimeout(() => errorMessage.style.display = 'none', 2000);
-        passwordInput.value = '';
+    // --- Funções Tabela ---
+    function addNewRow(tbody, focus=false) {
+      const newRow = tbody.insertRow();
+      const colCount = tbody.parentElement.tHead.rows[0].cells.length;
+      for (let i=0; i<colCount; i++) {
+        const cell = newRow.insertCell();
+        if (i === colCount-1) {
+          const chk = document.createElement("input");
+          chk.type = "checkbox";
+          cell.appendChild(chk);
+        } else {
+          cell.contentEditable = "true";
+        }
+      }
+      if (focus) newRow.cells[0].focus();
     }
-}
 
-function togglePasswordVisibility() {
-    if (passwordInput.type === 'password') {
-        passwordInput.type = 'text';
-    } else {
-        passwordInput.type = 'password';
+    function ensureEmptyRow(tbody) {
+      if (!tbody.rows.length || [...tbody.rows[tbody.rows.length-1].cells].some(c=>c.textContent.trim()!=='')) {
+        addNewRow(tbody);
+      }
     }
-}
 
-function handleKeyPress(event) {
-    if (event.key === 'Enter') {
-        if (!correctPassword) setPassword();
-        else checkPassword();
-    }
-}
-
-checkPasswordStatus();
-</script>
+    document.addEventListener('DOMContentLoaded', () => {
+      ["fixedExpensesTable","nubankTable","c6Table"].forEach(id=>{
+        const tb = document.getElementById(id).tBodies[0];
+        ensureEmptyRow(tb);
+        tb.addEventListener("input", ()=>ensureEmptyRow(tb));
+      });
+    });
+  </script>
 </body>
 </html>
-
-
