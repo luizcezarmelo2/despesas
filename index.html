@@ -39,7 +39,70 @@
       padding: 0;
     }
 
-    h1 { text-align:center; margin-bottom:20px; }
+    h1 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .month-navigation {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+      gap: 10px;
+    }
+
+    .month-navigation button {
+      background: var(--accent-color);
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+    }
+
+    .grid-container {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 20px;
+    }
+
+    .grid-item {
+      background: var(--surface-color);
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      padding: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+
+    th, td {
+      border: 1px solid var(--border-color);
+      padding: 8px;
+      text-align: left;
+    }
+
+    tfoot td {
+      font-weight: bold;
+    }
+
+    .summary-box {
+      text-align: center;
+      margin: 20px 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    #status {
+      margin-top: 20px;
+      text-align: center;
+      color: var(--text-color-secondary);
+    }
 
     /* Tela de Login */
     #loginScreen {
@@ -142,7 +205,7 @@
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-    import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+    import { getDatabase } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
     import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-auth.js";
 
     const firebaseConfig = {
@@ -156,14 +219,13 @@
     };
 
     const app = initializeApp(firebaseConfig);
-    const database = getDatabase(app);
     const auth = getAuth(app);
 
     // --- LOGIN ---
     const loginBtn = document.getElementById('loginBtn');
     loginBtn.addEventListener('click', () => {
       const pass = document.getElementById('passwordInput').value;
-      const emailFixo = "app@login.com"; // defina no Firebase Auth
+      const emailFixo = "app@login.com"; // você deve cadastrar este e-mail no Firebase Authentication
       signInWithEmailAndPassword(auth, emailFixo, pass)
         .then(() => {
           document.getElementById('loginScreen').style.display = "none";
