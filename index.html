@@ -335,7 +335,7 @@
     <div id="login-overlay">
         <div id="login-box">
             <h2 id="login-title">Autenticação</h2>
-            <p id="login-message">Para sua segurança, digite o código de acesso.</p>
+            <p id="login-message"></p>
             <input type="password" id="passcode-input" maxlength="4" inputmode="numeric" pattern="\d{4}">
             <button id="login-button">Entrar</button>
         </div>
@@ -504,7 +504,7 @@
 
         function setupLoginScreen(correctPasscode) {
             ui.loginTitle.textContent = "Acessar Painel";
-            ui.loginMessage.textContent = "Digite seu código de 4 dígitos para continuar.";
+            ui.loginMessage.textContent = "Digite sua senha de 4 dígitos para continuar.";
             ui.loginButton.textContent = "Entrar";
 
             const handleLogin = () => {
@@ -853,20 +853,33 @@
                 }
             });
             tbody.addEventListener('keydown', (e) => {
-                if (e.key === 'Enter' && e.target.tagName === 'TD' && !e.shiftKey) {
-                    e.preventDefault();
-                    const cell = e.target;
-                    const row = cell.parentElement;
-                    const nextRow = row.nextElementSibling;
-
-                    if (nextRow && nextRow.cells[cell.cellIndex] && nextRow.cells[cell.cellIndex].hasAttribute('contenteditable')) {
-                        nextRow.cells[cell.cellIndex].focus();
-                    } else {
-                        addNewRow(tbody, true);
-                    }
-                }
-            });
+    if (e.key === 'Enter' && e.target.tagName === 'TD' && !e.shiftKey) {
+        e.preventDefault();
+        const cell = e.target;
+        const row = cell.parentElement;
+        
+        // Tenta encontrar a próxima célula na MESMA linha que seja editável
+        let nextCell = cell.nextElementSibling;
+        while(nextCell && !nextCell.hasAttribute('contenteditable')) {
+            nextCell = nextCell.nextElementSibling;
         }
+
+        if (nextCell) {
+            // Se encontrou uma próxima célula na mesma linha, foca nela
+            nextCell.focus();
+        } else {
+            // Se não encontrou (está no fim da linha), vai para a próxima linha
+            const nextRow = row.nextElementSibling;
+            if (nextRow && nextRow.cells[0]) {
+                // Se existe uma próxima linha, foca na primeira célula dela
+                nextRow.cells[0].focus();
+            } else {
+                // Se não existe próxima linha, cria uma nova e foca na primeira célula
+                addNewRow(tbody, true);
+            }
+        }
+    }
+});
 
         function formatCurrency(value) {
             return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -934,7 +947,7 @@
             const totalsMap = {
                 fixed: { el: ui.fixedTotal, table: ui.fixedExpensesTable },
                 nubank: { el: ui.nubankTotal, table: ui.nubankTable },
-                c6: { el: ui.c6Total, table: ui.c6Tbody }
+                c6: { el: ui.c6Total, table: ui.c6Table }
             };
             if (totalsMap[type]) {
                 totalsMap[type].el.textContent = formatCurrency(calculateColumnTotal(totalsMap[type].table, 1));
@@ -955,4 +968,5 @@
     </script>
 </body>
 </html>
+
 
