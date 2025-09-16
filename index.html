@@ -446,529 +446,496 @@
     <div id="status"></div>
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js";
-        import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
+import { getDatabase, ref, set, onValue } from "https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyBiikcagIm1p7wJG6DsHijkvdy1fpDBn8Y",
-            authDomain: "bd-teste-c931c.firebaseapp.com",
-            databaseURL: "https://bd-teste-c931c-default-rtdb.europe-west1.firebasedatabase.app",
-            projectId: "bd-teste-c931c",
-            storageBucket: "bd-teste-c931c.appspot.com",
-            messagingSenderId: "270308100761",
-            appId: "1:270308100761:web:ae34fde6d5ae86b67b0608"
-        };
+const firebaseConfig = {
+    apiKey: "AIzaSyBiikcagIm1p7wJG6DsHijkvdy1fpDBn8Y",
+    authDomain: "bd-teste-c931c.firebaseapp.com",
+    databaseURL: "https://bd-teste-c931c-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "bd-teste-c931c",
+    storageBucket: "bd-teste-c931c.appspot.com",
+    messagingSenderId: "270308100761",
+    appId: "1:270308100761:web:ae34fde6d5ae86b67b0608"
+};
 
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-        let current_date = new Date();
-        let debounceTimer;
+const app = initializeApp(firebaseConfig);
+const database = getDatabase(app);
+let current_date = new Date();
+let debounceTimer;
 
-        const ui = {
-            loginOverlay: document.getElementById('login-overlay'),
-            loginTitle: document.getElementById('login-title'),
-            loginMessage: document.getElementById('login-message'),
-            passcodeInput: document.getElementById('passcode-input'),
-            loginButton: document.getElementById('login-button'),
-            currentMonthYear: document.getElementById('currentMonthYear'),
-            prevMonthBtn: document.getElementById('prevMonthBtn'),
-            nextMonthBtn: document.getElementById('nextMonthBtn'),
-            todayBtn: document.getElementById('todayBtn'),
-            saveDataBtn: document.getElementById('saveDataBtn'),
-            restoreDataBtn: document.getElementById('restoreDataBtn'),
-            restoreFileInput: document.getElementById('restoreFileInput'),
-            clearAllBtn: document.getElementById('clearAllBtn'),
-            fixedExpensesTable: document.getElementById('fixedExpensesTbody'),
-            nubankTable: document.getElementById('nubankTbody'),
-            c6Table: document.getElementById('c6Tbody'),
-            installmentsSummaryTable: document.getElementById('installmentsSummaryTable').tBodies[0],
-            fixedTotal: document.getElementById('fixedTotal'),
-            nubankTotal: document.getElementById('nubankTotal'),
-            c6Total: document.getElementById('c6Total'),
-            totalGeral: document.getElementById('totalGeral'),
-            status: document.getElementById('status')
-        };
+const ui = {
+    loginOverlay: document.getElementById('login-overlay'),
+    loginTitle: document.getElementById('login-title'),
+    loginMessage: document.getElementById('login-message'),
+    passcodeInput: document.getElementById('passcode-input'),
+    loginButton: document.getElementById('login-button'),
+    currentMonthYear: document.getElementById('currentMonthYear'),
+    prevMonthBtn: document.getElementById('prevMonthBtn'),
+    nextMonthBtn: document.getElementById('nextMonthBtn'),
+    todayBtn: document.getElementById('todayBtn'),
+    saveDataBtn: document.getElementById('saveDataBtn'),
+    restoreDataBtn: document.getElementById('restoreDataBtn'),
+    restoreFileInput: document.getElementById('restoreFileInput'),
+    clearAllBtn: document.getElementById('clearAllBtn'),
+    fixedExpensesTable: document.getElementById('fixedExpensesTbody'),
+    nubankTable: document.getElementById('nubankTbody'),
+    c6Table: document.getElementById('c6Tbody'),
+    installmentsSummaryTable: document.getElementById('installmentsSummaryTable').tBodies[0],
+    fixedTotal: document.getElementById('fixedTotal'),
+    nubankTotal: document.getElementById('nubankTotal'),
+    c6Total: document.getElementById('c6Total'),
+    totalGeral: document.getElementById('totalGeral'),
+    status: document.getElementById('status')
+};
 
-        document.addEventListener('DOMContentLoaded', initLogin);
+document.addEventListener('DOMContentLoaded', initLogin);
 
-        function initLogin() {
-            const passcodeRef = ref(database, 'passcode');
-            onValue(passcodeRef, (snapshot) => {
-                const savedPasscode = snapshot.val();
-                if (savedPasscode) {
-                    setupLoginScreen(savedPasscode);
-                } else {
-                    setupFirstAccessScreen();
-                }
-            }, { onlyOnce: true });
+function initLogin() {
+    const passcodeRef = ref(database, 'passcode');
+    onValue(passcodeRef, (snapshot) => {
+        const savedPasscode = snapshot.val();
+        if (savedPasscode) {
+            setupLoginScreen(savedPasscode);
+        } else {
+            setupFirstAccessScreen();
         }
+    }, { onlyOnce: true });
+}
 
-        function setupLoginScreen(correctPasscode) {
-            ui.loginTitle.textContent = "Acessar Painel";
-            ui.loginMessage.textContent = "Digite sua senha de 4 dígitos para continuar.";
-            ui.loginButton.textContent = "Entrar";
-
-            const handleLogin = () => {
-                if (ui.passcodeInput.value === correctPasscode) {
-                    ui.loginOverlay.style.opacity = '0';
-                    setTimeout(() => ui.loginOverlay.style.display = 'none', 300);
-                    startApp();
-                } else {
-                    alert('Código incorreto!');
-                    ui.passcodeInput.value = '';
-                }
-            };
-
-            ui.loginButton.addEventListener('click', handleLogin);
-            ui.passcodeInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') handleLogin();
-            });
+function setupLoginScreen(correctPasscode) {
+    ui.loginTitle.textContent = "Acessar Painel";
+    ui.loginMessage.textContent = "Digite seu código de 4 dígitos para continuar.";
+    ui.loginButton.textContent = "Entrar";
+    const handleLogin = () => {
+        if (ui.passcodeInput.value === correctPasscode) {
+            ui.loginOverlay.style.opacity = '0';
+            setTimeout(() => ui.loginOverlay.style.display = 'none', 300);
+            startApp();
+        } else {
+            alert('Código incorreto!');
+            ui.passcodeInput.value = '';
         }
+    };
+    ui.loginButton.addEventListener('click', handleLogin);
+    ui.passcodeInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') handleLogin();
+    });
+}
 
-        function setupFirstAccessScreen() {
-            ui.loginTitle.textContent = "Primeiro Acesso";
-            ui.loginMessage.textContent = "Crie um código de 4 dígitos para proteger seus dados.";
-            ui.loginButton.textContent = "Salvar e Entrar";
-
-            const handleSetup = () => {
-                const newPasscode = ui.passcodeInput.value;
-                if (newPasscode && newPasscode.length === 4 && !isNaN(newPasscode)) {
-                    set(ref(database, 'passcode'), newPasscode).then(() => {
-                        ui.loginOverlay.style.opacity = '0';
-                        setTimeout(() => ui.loginOverlay.style.display = 'none', 300);
-                        startApp();
-                    }).catch(err => alert("Erro ao salvar o código. Tente novamente."));
-                } else {
-                    alert('Por favor, insira um código de 4 números.');
-                }
-            };
-
-            ui.loginButton.addEventListener('click', handleSetup);
-            ui.passcodeInput.addEventListener('keyup', (e) => {
-                if (e.key === 'Enter') handleSetup();
-            });
+function setupFirstAccessScreen() {
+    ui.loginTitle.textContent = "Primeiro Acesso";
+    ui.loginMessage.textContent = "Crie um código de 4 dígitos para proteger seus dados.";
+    ui.loginButton.textContent = "Salvar e Entrar";
+    const handleSetup = () => {
+        const newPasscode = ui.passcodeInput.value;
+        if (newPasscode && newPasscode.length === 4 && !isNaN(newPasscode)) {
+            set(ref(database, 'passcode'), newPasscode).then(() => {
+                ui.loginOverlay.style.opacity = '0';
+                setTimeout(() => ui.loginOverlay.style.display = 'none', 300);
+                startApp();
+            }).catch(err => alert("Erro ao salvar o código. Tente novamente."));
+        } else {
+            alert('Por favor, insira um código de 4 números.');
         }
+    };
+    ui.loginButton.addEventListener('click', handleSetup);
+    ui.passcodeInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') handleSetup();
+    });
+}
 
-        function startApp() {
-            // MODIFICADO: Avança a data em um mês na inicialização da página
-            current_date.setMonth(current_date.getMonth() + 1);
-            updateMonthDisplay();
-            loadData();
+function startApp() {
+    current_date.setMonth(current_date.getMonth() + 1);
+    updateMonthDisplay();
+    loadData();
+    ui.prevMonthBtn.addEventListener('click', () => changeMonth(-1));
+    ui.nextMonthBtn.addEventListener('click', () => changeMonth(1));
+    ui.todayBtn.addEventListener('click', () => {
+        current_date = new Date();
+        current_date.setMonth(current_date.getMonth() + 1);
+        updateMonthDisplay();
+        loadData();
+    });
+    ui.saveDataBtn.addEventListener('click', saveDataAsTxt);
+    ui.restoreDataBtn.addEventListener('click', () => ui.restoreFileInput.click());
+    ui.restoreFileInput.addEventListener('change', restoreDataFromFile);
+    ui.clearAllBtn.addEventListener('click', clearAllData);
+    setupTableListeners(ui.fixedExpensesTable, 'fixed');
+    setupTableListeners(ui.nubankTable, 'nubank');
+    setupTableListeners(ui.c6Table, 'c6');
+}
 
-            ui.prevMonthBtn.addEventListener('click', () => changeMonth(-1));
-            ui.nextMonthBtn.addEventListener('click', () => changeMonth(1));
-
-            ui.todayBtn.addEventListener('click', () => {
-                // MODIFICADO: O botão "Hoje" agora aponta para o próximo mês em relação à data atual.
-                current_date = new Date();
-                current_date.setMonth(current_date.getMonth() + 1);
-                updateMonthDisplay();
-                loadData();
-            });
-
-            ui.saveDataBtn.addEventListener('click', saveDataAsTxt);
-            ui.restoreDataBtn.addEventListener('click', () => ui.restoreFileInput.click());
-            ui.restoreFileInput.addEventListener('change', restoreDataFromFile);
-            ui.clearAllBtn.addEventListener('click', clearAllData);
-
-            setupTableListeners(ui.fixedExpensesTable, 'fixed');
-            setupTableListeners(ui.nubankTable, 'nubank');
-            setupTableListeners(ui.c6Table, 'c6');
+function saveDataAsTxt() {
+    const dataRef = ref(database, 'expenses/');
+    onValue(dataRef, (snapshot) => {
+        const data = snapshot.val();
+        if (!data) {
+            showStatus('Não há dados para salvar.', 3000);
+            return;
         }
+        const dataStr = JSON.stringify(data, null, 2);
+        const blob = new Blob([dataStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        const date = new Date().toISOString().slice(0, 10);
+        a.download = `backup_despesas_${date}.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+        showStatus('Backup gerado com sucesso!', 3000);
+    }, { onlyOnce: true });
+}
 
-        function saveDataAsTxt() {
+function restoreDataFromFile(event) {
+    if (!confirm('ATENÇÃO! Isto irá substituir TODOS os dados existentes na nuvem pelos dados do arquivo. Deseja continuar?')) {
+        event.target.value = null;
+        return;
+    }
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (e) => {
+        try {
+            const parsedData = JSON.parse(e.target.result);
             const dataRef = ref(database, 'expenses/');
-            onValue(dataRef, (snapshot) => {
-                const data = snapshot.val();
-                if (!data) {
-                    showStatus('Não há dados para salvar.', 3000);
-                    return;
-                }
-
-                const dataStr = JSON.stringify(data, null, 2);
-                const blob = new Blob([dataStr], { type: 'application/json' });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement('a');
-                a.href = url;
-                const date = new Date().toISOString().slice(0, 10);
-                a.download = `backup_despesas_${date}.txt`;
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showStatus('Backup gerado com sucesso!', 3000);
-            }, { onlyOnce: true });
+            set(dataRef, parsedData).then(() => {
+                showStatus('Dados restaurados com sucesso!', 3000);
+                loadData();
+            }).catch(err => {
+                showStatus('Erro ao salvar dados restaurados.', 5000);
+                console.error(err);
+            });
+        } catch (error) {
+            showStatus('Erro: Arquivo de backup inválido.', 5000);
+            console.error("Parse error:", error);
+        } finally {
+            event.target.value = null;
         }
+    };
+    reader.readAsText(file);
+}
 
-        function restoreDataFromFile(event) {
-            if (!confirm('ATENÇÃO! Isto irá substituir TODOS os dados existentes na nuvem pelos dados do arquivo. Deseja continuar?')) {
-                event.target.value = null;
-                return;
-            }
-            const file = event.target.files[0];
-            if (!file) return;
+function changeMonth(direction) {
+    saveData(true);
+    current_date.setMonth(current_date.getMonth() + direction);
+    updateMonthDisplay();
+    loadData();
+}
 
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                try {
-                    const parsedData = JSON.parse(e.target.result);
-                    const dataRef = ref(database, 'expenses/');
-                    set(dataRef, parsedData).then(() => {
-                        showStatus('Dados restaurados com sucesso!', 3000);
-                        loadData();
-                    }).catch(err => {
-                        showStatus('Erro ao salvar dados restaurados.', 5000);
-                        console.error(err);
-                    });
-                } catch (error) {
-                    showStatus('Erro: Arquivo de backup inválido.', 5000);
-                    console.error("Parse error:", error);
-                } finally {
-                    event.target.value = null;
-                }
+function updateMonthDisplay() {
+    const month = current_date.toLocaleString('pt-BR', { month: 'long' });
+    const year = current_date.getFullYear();
+    ui.currentMonthYear.textContent = `${month.charAt(0).toUpperCase() + month.slice(1)} de ${year}`;
+}
+
+function getMonthYearKey(date) {
+    return `${date.getFullYear()}_${(date.getMonth() + 1).toString().padStart(2, '0')}`;
+}
+
+function showStatus(message, duration = 3000) {
+    ui.status.textContent = message;
+    ui.status.style.opacity = '1';
+    setTimeout(() => {
+        ui.status.style.opacity = '0';
+    }, duration);
+}
+
+function saveData(force = false) {
+    clearTimeout(debounceTimer);
+    const saveAction = () => {
+        const monthKey = getMonthYearKey(current_date);
+        const dataToSave = {
+            fixed: parseTableData(ui.fixedExpensesTable),
+            nubank: parseTableData(ui.nubankTable),
+            c6: parseTableData(ui.c6Table),
+        };
+        set(ref(database, 'expenses/' + monthKey), dataToSave).then(() => showStatus('Salvo!')).catch((error) => {
+            console.error("Erro ao salvar: ", error);
+            showStatus('Erro ao salvar!', 5000);
+        });
+    };
+    if (force) {
+        saveAction();
+    } else {
+        debounceTimer = setTimeout(saveAction, 2000);
+    }
+}
+
+function loadData() {
+    const monthKey = getMonthYearKey(current_date);
+    const prevMonthDate = new Date(current_date);
+    prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+    const prevMonthKey = getMonthYearKey(prevMonthDate);
+    const currentMonthRef = ref(database, 'expenses/' + monthKey);
+    const prevMonthRef = ref(database, 'expenses/' + prevMonthKey);
+    onValue(currentMonthRef, (currentSnapshot) => {
+        const currentData = currentSnapshot.val() || { fixed: [], nubank: [], c6: [] };
+        onValue(prevMonthRef, (prevSnapshot) => {
+            const prevData = prevSnapshot.val() || { fixed: [], nubank: [], c6: [] };
+            const continuingNubank = processContinuingInstallments(prevData.nubank || []);
+            const continuingC6 = processContinuingInstallments(prevData.c6 || []);
+            const continuingFixed = (prevData.fixed || []).map(item => [item[0], item[1], false]);
+            const combinedData = {
+                fixed: combineData(currentData.fixed, continuingFixed),
+                nubank: combineData(currentData.nubank, continuingNubank),
+                c6: combineData(currentData.c6, continuingC6)
             };
-            reader.readAsText(file);
+            populateTable(ui.fixedExpensesTable, combinedData.fixed);
+            populateTable(ui.nubankTable, combinedData.nubank);
+            populateTable(ui.c6Table, combinedData.c6);
+            [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(ensureEmptyRow);
+            updateAllTotals();
+            set(currentMonthRef, combinedData);
+        }, { onlyOnce: true });
+    }, { onlyOnce: true });
+}
+
+function combineData(currentData, prevData) {
+    if (!currentData || currentData.length === 0) {
+        return prevData;
+    }
+    const prevMap = new Map();
+    prevData.forEach(item => {
+        const description = item[0] || '';
+        const installment = item[2] || '';
+        prevMap.set(description + installment, item);
+    });
+    currentData.forEach(item => {
+        const description = item[0] || '';
+        const installment = item[2] || '';
+        const key = description + installment;
+        if (prevMap.has(key)) {
+            prevMap.delete(key);
         }
+    });
+    return [...currentData, ...Array.from(prevMap.values())];
+}
 
-        function changeMonth(direction) {
-            saveData(true);
-            current_date.setMonth(current_date.getMonth() + direction);
-            updateMonthDisplay();
-            loadData();
-        }
+function clearAllData() {
+    if (!confirm('ATENÇÃO! Isso vai apagar todos os dados. Deseja continuar?')) {
+        return;
+    }
+    const monthKey = getMonthYearKey(current_date);
+    set(ref(database, 'expenses/' + monthKey), null).then(() => {
+        showStatus('Dados do mês atual limpos com sucesso!', 3000);
+        [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(t => t.innerHTML = '');
+        [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(ensureEmptyRow);
+        updateAllTotals();
+    }).catch((error) => {
+        console.error("Erro ao limpar dados: ", error);
+        showStatus('Erro ao limpar os dados!', 5000);
+    });
+}
 
-        function updateMonthDisplay() {
-            const month = current_date.toLocaleString('pt-BR', { month: 'long' });
-            const year = current_date.getFullYear();
-            ui.currentMonthYear.textContent = `${month.charAt(0).toUpperCase() + month.slice(1)} de ${year}`;
-        }
-
-        function getMonthYearKey(date) {
-            return `${date.getFullYear()}_${(date.getMonth() + 1).toString().padStart(2, '0')}`;
-        }
-
-        function showStatus(message, duration = 3000) {
-            ui.status.textContent = message;
-            ui.status.style.opacity = '1';
-            setTimeout(() => {
-                ui.status.style.opacity = '0';
-            }, duration);
-        }
-
-        function saveData(force = false) {
-            clearTimeout(debounceTimer);
-            const saveAction = () => {
-                const monthKey = getMonthYearKey(current_date);
-                const dataToSave = {
-                    fixed: parseTableData(ui.fixedExpensesTable),
-                    nubank: parseTableData(ui.nubankTable),
-                    c6: parseTableData(ui.c6Table),
-                };
-                set(ref(database, 'expenses/' + monthKey), dataToSave).then(() => showStatus('Salvo!')).catch((error) => {
-                    console.error("Erro ao salvar: ", error);
-                    showStatus('Erro ao salvar!', 5000);
-                });
-            };
-
-            if (force) {
-                saveAction();
-            } else {
-                debounceTimer = setTimeout(saveAction, 2000);
+function processContinuingInstallments(installments) {
+    return installments.reduce((acc, item) => {
+        const parts = (item[2] || "").match(/(\d+)\/(\d+)/);
+        if (parts && parts.length === 3) {
+            const current = parseInt(parts[1], 10);
+            const total = parseInt(parts[2], 10);
+            if (current < total) {
+                acc.push([item[0], item[1], `${current + 1}/${total}`, false]);
             }
         }
+        return acc;
+    }, []);
+}
 
-        function loadData() {
-            const monthKey = getMonthYearKey(current_date);
-            const prevMonthDate = new Date(current_date);
-            prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
-            const prevMonthKey = getMonthYearKey(prevMonthDate);
-            const currentMonthRef = ref(database, 'expenses/' + monthKey);
-            const prevMonthRef = ref(database, 'expenses/' + prevMonthKey);
-
-            onValue(currentMonthRef, (currentSnapshot) => {
-                const currentData = currentSnapshot.val() || { fixed: [], nubank: [], c6: [] };
-                onValue(prevMonthRef, (prevSnapshot) => {
-                    const prevData = prevSnapshot.val() || { fixed: [], nubank: [], c6: [] };
-                    const continuingNubank = processContinuingInstallments(prevData.nubank || []);
-                    const continuingC6 = processContinuingInstallments(prevData.c6 || []);
-                    const continuingFixed = (prevData.fixed || []).map(item => [item[0], item[1], false]);
-                    const combinedData = {
-                        fixed: combineData(currentData.fixed, continuingFixed),
-                        nubank: combineData(currentData.nubank, continuingNubank),
-                        c6: combineData(currentData.c6, continuingC6)
-                    };
-
-                    populateTable(ui.fixedExpensesTable, combinedData.fixed);
-                    populateTable(ui.nubankTable, combinedData.nubank);
-                    populateTable(ui.c6Table, combinedData.c6);
-
-                    [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(ensureEmptyRow);
-                    updateAllTotals();
-                    set(currentMonthRef, combinedData);
-                }, { onlyOnce: true });
-            }, { onlyOnce: true });
-        }
-
-        function combineData(currentData, prevData) {
-            if (!currentData || currentData.length === 0) {
-                return prevData;
-            }
-            const prevMap = new Map();
-            prevData.forEach(item => {
-                const description = item[0] || '';
-                const installment = item[2] || '';
-                prevMap.set(description + installment, item);
-            });
-            currentData.forEach(item => {
-                const description = item[0] || '';
-                const installment = item[2] || '';
-                const key = description + installment;
-                if (prevMap.has(key)) {
-                    prevMap.delete(key);
-                }
-            });
-            return [...currentData, ...Array.from(prevMap.values())];
-        }
-
-        function clearAllData() {
-            if (!confirm('ATENÇÃO! Isso vai apagar todos os dados. Deseja continuar?')) {
-                return;
-            }
-            const monthKey = getMonthYearKey(current_date);
-            set(ref(database, 'expenses/' + monthKey), null).then(() => {
-                showStatus('Dados do mês atual limpos com sucesso!', 3000);
-                [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(t => t.innerHTML = '');
-                [ui.fixedExpensesTable, ui.nubankTable, ui.c6Table].forEach(ensureEmptyRow);
-                updateAllTotals();
-            }).catch((error) => {
-                console.error("Erro ao limpar dados: ", error);
-                showStatus('Erro ao limpar os dados!', 5000);
-            });
-        }
-
-        function processContinuingInstallments(installments) {
-            return installments.reduce((acc, item) => {
-                const parts = (item[2] || "").match(/(\d+)\/(\d+)/);
-                if (parts && parts.length === 3) {
-                    const current = parseInt(parts[1], 10);
-                    const total = parseInt(parts[2], 10);
-                    if (current < total) {
-                        acc.push([item[0], item[1], `${current + 1}/${total}`, false]);
-                    }
-                }
-                return acc;
-            }, []);
-        }
-
-        function populateTable(tbody, dataArray) {
-            tbody.innerHTML = '';
-            const hasCheckbox = tbody.id !== 'installmentsSummaryTable';
-            dataArray.forEach(rowData => {
-                const row = tbody.insertRow();
-                rowData.forEach((cellData, index) => {
-                    if (hasCheckbox && index === rowData.length - 1) return;
-                    const cell = row.insertCell();
-                    cell.textContent = cellData;
-                    cell.setAttribute('contenteditable', 'true');
-                });
-                if (hasCheckbox) {
-                    const checkboxCell = row.insertCell();
-                    const checkbox = document.createElement('input');
-                    checkbox.type = 'checkbox';
-                    checkbox.checked = rowData[rowData.length - 1] === true;
-                    checkboxCell.style.textAlign = 'center';
-                    checkboxCell.appendChild(checkbox);
-                }
-            });
-        }
-
-        function parseTableData(tbody) {
-            return Array.from(tbody.rows).map(row => {
-                const rowData = Array.from(row.cells).map(cell => {
-                    if (cell.querySelector('input[type="checkbox"]')) {
-                        return cell.querySelector('input[type="checkbox"]').checked;
-                    }
-                    return cell.textContent.trim();
-                });
-                const checkboxState = rowData.pop();
-                if (rowData.some(cellData => cellData !== '')) {
-                    return [...rowData, checkboxState];
-                }
-                return null;
-            }).filter(rowData => rowData !== null);
-        }
-
-        function ensureEmptyRow(tbody) {
-            const isRowEmpty = (row) => {
-                for (let i = 0; i < row.cells.length - 1; i++) {
-                    if (row.cells[i].textContent.trim() !== '') {
-                        return false;
-                    }
-                }
-                return true;
-            }
-            if (tbody.rows.length === 0 || (tbody.rows.length > 0 && !isRowEmpty(tbody.rows[tbody.rows.length - 1]))) {
-                addNewRow(tbody);
-            }
-        }
-
-        function addNewRow(tbody, focusFirstCell = false) {
-            const newRow = tbody.insertRow();
-            const colCount = tbody.parentElement.tHead.rows[0].cells.length;
-            for (let i = 0; i < colCount - 1; i++) {
-                newRow.insertCell().setAttribute('contenteditable', 'true');
-            }
-            const paidCell = newRow.insertCell();
+function populateTable(tbody, dataArray) {
+    tbody.innerHTML = '';
+    const hasCheckbox = tbody.id !== 'installmentsSummaryTable';
+    dataArray.forEach(rowData => {
+        const row = tbody.insertRow();
+        rowData.forEach((cellData, index) => {
+            if (hasCheckbox && index === rowData.length - 1) return;
+            const cell = row.insertCell();
+            cell.textContent = cellData;
+            cell.setAttribute('contenteditable', 'true');
+        });
+        if (hasCheckbox) {
+            const checkboxCell = row.insertCell();
             const checkbox = document.createElement('input');
             checkbox.type = 'checkbox';
-            paidCell.style.textAlign = 'center';
-            paidCell.appendChild(checkbox);
-            if (focusFirstCell) newRow.cells[0].focus();
+            checkbox.checked = rowData[rowData.length - 1] === true;
+            checkboxCell.style.textAlign = 'center';
+            checkboxCell.appendChild(checkbox);
         }
+    });
+}
 
-        function setupTableListeners(tbody, type) {
-            tbody.addEventListener('focusout', (e) => {
-                if (e.target.tagName === 'TD' && e.target.hasAttribute('contenteditable')) {
-                    const cell = e.target;
-                    if (cell.cellIndex === 1) {
-                        const text = cell.textContent.trim();
-                        if (text) {
-                            let number = parseCurrency(text);
-                            cell.textContent = number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                            updateTotals(type);
-                            saveData();
-                        }
-                    }
-                }
-            });
-            tbody.addEventListener('input', (e) => {
-                if (e.target.hasAttribute('contenteditable')) {
+function parseTableData(tbody) {
+    return Array.from(tbody.rows).map(row => {
+        const rowData = Array.from(row.cells).map(cell => {
+            if (cell.querySelector('input[type="checkbox"]')) {
+                return cell.querySelector('input[type="checkbox"]').checked;
+            }
+            return cell.textContent.trim();
+        });
+        const checkboxState = rowData.pop();
+        if (rowData.some(cellData => cellData !== '')) {
+            return [...rowData, checkboxState];
+        }
+        return null;
+    }).filter(rowData => rowData !== null);
+}
+
+function ensureEmptyRow(tbody) {
+    const isRowEmpty = (row) => {
+        for (let i = 0; i < row.cells.length - 1; i++) {
+            if (row.cells[i].textContent.trim() !== '') {
+                return false;
+            }
+        }
+        return true;
+    }
+    if (tbody.rows.length === 0 || (tbody.rows.length > 0 && !isRowEmpty(tbody.rows[tbody.rows.length - 1]))) {
+        addNewRow(tbody);
+    }
+}
+
+function addNewRow(tbody, focusFirstCell = false) {
+    const newRow = tbody.insertRow();
+    const colCount = tbody.parentElement.tHead.rows[0].cells.length;
+    for (let i = 0; i < colCount - 1; i++) {
+        newRow.insertCell().setAttribute('contenteditable', 'true');
+    }
+    const paidCell = newRow.insertCell();
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    paidCell.style.textAlign = 'center';
+    paidCell.appendChild(checkbox);
+    if (focusFirstCell) newRow.cells[0].focus();
+}
+
+function setupTableListeners(tbody, type) {
+    tbody.addEventListener('focusout', (e) => {
+        if (e.target.tagName === 'TD' && e.target.hasAttribute('contenteditable')) {
+            const cell = e.target;
+            if (cell.cellIndex === 1) {
+                const text = cell.textContent.trim();
+                if (text) {
+                    let number = parseCurrency(text);
+                    cell.textContent = number.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
                     updateTotals(type);
                     saveData();
-                    ensureEmptyRow(tbody);
                 }
-            });
-            tbody.addEventListener('change', (e) => {
-                if (e.target.type === 'checkbox') {
-                    saveData();
-                }
-            });
-            tbody.addEventListener('keydown', (e) => {
-    if (e.key === 'Enter' && e.target.tagName === 'TD' && !e.shiftKey) {
-        e.preventDefault();
-        const cell = e.target;
-        const row = cell.parentElement;
-        
-        // Tenta encontrar a próxima célula na MESMA linha que seja editável
-        let nextCell = cell.nextElementSibling;
-        while(nextCell && !nextCell.hasAttribute('contenteditable')) {
-            nextCell = nextCell.nextElementSibling;
+            }
         }
-
-        if (nextCell) {
-            // Se encontrou uma próxima célula na mesma linha, foca nela
-            nextCell.focus();
-        } else {
-            // Se não encontrou (está no fim da linha), vai para a próxima linha
-            const nextRow = row.nextElementSibling;
-            if (nextRow && nextRow.cells[0]) {
-                // Se existe uma próxima linha, foca na primeira célula dela
-                nextRow.cells[0].focus();
+    });
+    tbody.addEventListener('input', (e) => {
+        if (e.target.hasAttribute('contenteditable')) {
+            updateTotals(type);
+            saveData();
+            ensureEmptyRow(tbody);
+        }
+    });
+    tbody.addEventListener('change', (e) => {
+        if (e.target.type === 'checkbox') {
+            saveData();
+        }
+    });
+    tbody.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName === 'TD' && !e.shiftKey) {
+            e.preventDefault();
+            const cell = e.target;
+            const row = cell.parentElement;
+            let nextCell = cell.nextElementSibling;
+            while (nextCell && !nextCell.hasAttribute('contenteditable')) {
+                nextCell = nextCell.nextElementSibling;
+            }
+            if (nextCell) {
+                nextCell.focus();
             } else {
-                // Se não existe próxima linha, cria uma nova e foca na primeira célula
-                addNewRow(tbody, true);
+                const nextRow = row.nextElementSibling;
+                if (nextRow && nextRow.cells[0]) {
+                    nextRow.cells[0].focus();
+                } else {
+                    addNewRow(tbody, true);
+                }
             }
         }
+    });
+}
+
+function formatCurrency(value) {
+    return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+}
+
+function parseCurrency(text) {
+    return parseFloat(String(text).replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
+}
+
+function calculateColumnTotal(tbody, colIndex) {
+    return Array.from(tbody.rows).reduce((total, row) => total + (row.cells[colIndex] ? parseCurrency(row.cells[colIndex].textContent) : 0), 0);
+}
+
+function updateInstallmentSummary() {
+    ui.installmentsSummaryTable.innerHTML = '';
+    const allInstallmentsRaw = [
+        ...parseTableData(ui.nubankTable).map(d => ({ data: d, card: 'Nubank' })),
+        ...parseTableData(ui.c6Table).map(d => ({ data: d, card: 'C6 Bank' }))
+    ];
+    const installmentsWithData = allInstallmentsRaw.map(({ data, card }) => {
+        const description = data[0];
+        const valueText = data[1];
+        const installmentText = data[2] || "";
+        const parts = installmentText.match(/(\d+)\/(\d+)/);
+        if (!parts || !description || !valueText) return null;
+        const currentPart = parseInt(parts[1], 10);
+        const totalParts = parseInt(parts[2], 10);
+        const remaining = totalParts - currentPart;
+        if (remaining < 0) return null;
+        const dueDate = new Date(current_date);
+        dueDate.setMonth(dueDate.getMonth() + remaining);
+        dueDate.setDate(1);
+        const value = parseCurrency(valueText);
+        return { description, card, value, installmentText, dueDate };
+    }).filter(item => item !== null);
+    installmentsWithData.sort((a, b) => a.dueDate - b.dueDate);
+    let totalInstallmentsValue = 0;
+    installmentsWithData.forEach(item => {
+        totalInstallmentsValue += item.value;
+        const endMonth = item.dueDate.toLocaleString('pt-BR', { month: 'long' });
+        const endYear = item.dueDate.getFullYear();
+        const row = ui.installmentsSummaryTable.insertRow();
+        row.insertCell().textContent = item.description;
+        row.insertCell().textContent = item.card;
+        const valueCell = row.insertCell();
+        valueCell.textContent = item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        row.insertCell().textContent = item.installmentText;
+        row.insertCell().textContent = `${endMonth.charAt(0).toUpperCase() + endMonth.slice(1)}/${endYear}`;
+    });
+    document.getElementById('installmentsTotal').textContent = formatCurrency(totalInstallmentsValue);
+}
+
+function updateTotals(type) {
+    const totalsMap = {
+        fixed: { el: ui.fixedTotal, table: ui.fixedExpensesTable },
+        nubank: { el: ui.nubankTotal, table: ui.nubankTable },
+        c6: { el: ui.c6Total, table: ui.c6Table }
+    };
+    if (totalsMap[type]) {
+        totalsMap[type].el.textContent = formatCurrency(calculateColumnTotal(totalsMap[type].table, 1));
     }
-});
-        }
-        
-        function formatCurrency(value) {
-            return value.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
-        }
+    updateAllTotals();
+}
 
-        function parseCurrency(text) {
-            return parseFloat(String(text).replace(/[R$\s.]/g, '').replace(',', '.')) || 0;
-        }
-
-        function calculateColumnTotal(tbody, colIndex) {
-            return Array.from(tbody.rows).reduce((total, row) => total + (row.cells[colIndex] ? parseCurrency(row.cells[colIndex].textContent) : 0), 0);
-        }
-
-        function updateInstallmentSummary() {
-            ui.installmentsSummaryTable.innerHTML = '';
-            const allInstallmentsRaw = [
-                ...parseTableData(ui.nubankTable).map(d => ({ data: d, card: 'Nubank' })),
-                ...parseTableData(ui.c6Table).map(d => ({ data: d, card: 'C6 Bank' }))
-            ];
-
-            const installmentsWithData = allInstallmentsRaw.map(({ data, card }) => {
-                const description = data[0];
-                const valueText = data[1];
-                const installmentText = data[2] || "";
-                const parts = installmentText.match(/(\d+)\/(\d+)/);
-
-                if (!parts || !description || !valueText) return null;
-
-                const currentPart = parseInt(parts[1], 10);
-                const totalParts = parseInt(parts[2], 10);
-                const remaining = totalParts - currentPart;
-
-                if (remaining < 0) return null;
-
-                const dueDate = new Date(current_date);
-                dueDate.setMonth(dueDate.getMonth() + remaining);
-                dueDate.setDate(1);
-
-                const value = parseCurrency(valueText);
-
-                return { description, card, value, installmentText, dueDate };
-            }).filter(item => item !== null);
-
-            installmentsWithData.sort((a, b) => a.dueDate - b.dueDate);
-
-            let totalInstallmentsValue = 0;
-            installmentsWithData.forEach(item => {
-                totalInstallmentsValue += item.value;
-                const endMonth = item.dueDate.toLocaleString('pt-BR', { month: 'long' });
-                const endYear = item.dueDate.getFullYear();
-
-                const row = ui.installmentsSummaryTable.insertRow();
-                row.insertCell().textContent = item.description;
-                row.insertCell().textContent = item.card;
-                const valueCell = row.insertCell();
-                valueCell.textContent = item.value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                row.insertCell().textContent = item.installmentText;
-                row.insertCell().textContent = `${endMonth.charAt(0).toUpperCase() + endMonth.slice(1)}/${endYear}`;
-            });
-
-            document.getElementById('installmentsTotal').textContent = formatCurrency(totalInstallmentsValue);
-        }
-
-        function updateTotals(type) {
-            const totalsMap = {
-                fixed: { el: ui.fixedTotal, table: ui.fixedExpensesTable },
-                nubank: { el: ui.nubankTotal, table: ui.nubankTable },
-                c6: { el: ui.c6Total, table: ui.c6Table }
-            };
-            if (totalsMap[type]) {
-                totalsMap[type].el.textContent = formatCurrency(calculateColumnTotal(totalsMap[type].table, 1));
-            }
-            updateAllTotals();
-        }
-
-        function updateAllTotals() {
-            const fixedTotal = calculateColumnTotal(ui.fixedExpensesTable, 1);
-            const nubankTotal = calculateColumnTotal(ui.nubankTable, 1);
-            const c6Total = calculateColumnTotal(ui.c6Table, 1);
-            ui.fixedTotal.textContent = formatCurrency(fixedTotal);
-            ui.nubankTotal.textContent = formatCurrency(nubankTotal);
-            ui.c6Total.textContent = formatCurrency(c6Total);
-            ui.totalGeral.textContent = formatCurrency(fixedTotal + nubankTotal + c6Total);
-            updateInstallmentSummary();
-        }
+function updateAllTotals() {
+    const fixedTotal = calculateColumnTotal(ui.fixedExpensesTable, 1);
+    const nubankTotal = calculateColumnTotal(ui.nubankTable, 1);
+    const c6Total = calculateColumnTotal(ui.c6Table, 1);
+    ui.fixedTotal.textContent = formatCurrency(fixedTotal);
+    ui.nubankTotal.textContent = formatCurrency(nubankTotal);
+    ui.c6Total.textContent = formatCurrency(c6Total);
+    ui.totalGeral.textContent = formatCurrency(fixedTotal + nubankTotal + c6Total);
+    updateInstallmentSummary();
+}
     </script>
 </body>
 </html>
+
 
 
 
