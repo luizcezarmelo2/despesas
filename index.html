@@ -353,7 +353,7 @@
             <input type="file" id="restoreFileInput" accept=".txt,.json" style="display: none;">
         </div>
         <div class="summary-box">
-            <h3>Total Geral de Despesas do Mês</h3>
+            <h3>Total Geral do Mês</h3>
             <div id="totalGeral">R$ 0,00</div>
         </div>
         <div class="grid-container">
@@ -364,7 +364,7 @@
                         <tr>
                             <th>Descrição</th>
                             <th>Valor (R$)</th>
-                            <th>Pago</th>
+                            <th>Conferido</th>
                         </tr>
                     </thead>
                     <tbody id="fixedExpensesTbody"></tbody>
@@ -383,9 +383,9 @@
                     <thead>
                         <tr>
                             <th>Descrição</th>
-                            <th>Valor Parcela (R$)</th>
-                            <th>Parcela (Ex: 01/12)</th>
-                            <th>Pago</th>
+                            <th>Valor</th>
+                            <th>Parcela</th>
+                            <th>Conferido</th>
                         </tr>
                     </thead>
                     <tbody id="nubankTbody"></tbody>
@@ -404,9 +404,9 @@
                     <thead>
                         <tr>
                             <th>Descrição</th>
-                            <th>Valor Parcela (R$)</th>
-                            <th>Parcela (Ex: 01/12)</th>
-                            <th>Pago</th>
+                            <th>Valor</th>
+                            <th>Parcela</th>
+                            <th>Conferido</th>
                         </tr>
                     </thead>
                     <tbody id="c6Tbody"></tbody>
@@ -420,15 +420,15 @@
                 </table>
             </div>
             <div class="grid-item full-width-item">
-                <h2>Resumo de Todas as Parcelas Ativas</h2>
+                <h2>Vencimento das parcelas</h2>
                 <table id="installmentsSummaryTable">
                     <thead>
                         <tr>
                             <th>Descrição</th>
                             <th>Cartão</th>
-                            <th>Valor Parcela (R$)</th>
+                            <th>Valor</th>
                             <th>Parcela</th>
-                            <th>Mês de Vencimento</th>
+                            <th>Mês</th>
                         </tr>
                     </thead>
                     <tbody></tbody>
@@ -730,7 +730,7 @@
         }
 
         function clearAllData() {
-            if (!confirm('ATENÇÃO! Isso vai apagar todos os dados visíveis deste mês. Deseja continuar?')) {
+            if (!confirm('ATENÇÃO! Isso vai apagar todos os dados. Deseja continuar?')) {
                 return;
             }
             const monthKey = getMonthYearKey(current_date);
@@ -955,3 +955,4 @@
     </script>
 </body>
 </html>
+
